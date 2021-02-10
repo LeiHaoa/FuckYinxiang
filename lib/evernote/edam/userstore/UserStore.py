@@ -15,7 +15,14 @@ try:
   from thrift.protocol import fastbinary
 except:
   fastbinary = None
-
+# paste this at the start of code
+import ssl
+try:
+	_create_unverified_https_context = ssl._create_unverified_context
+except AttributeError:
+	pass
+else:
+	ssl._create_default_https_context = _create_unverified_https_context
 
 class Iface(object):
   """
