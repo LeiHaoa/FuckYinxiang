@@ -1,8 +1,6 @@
 from lxml import etree
 #import xml.etree.ElementTree as ET
 
-plist = ['div']
-
 def dfs_table(node, tableString):
   #print('processing:    ', node.tag)
   for child in node.getchildren():
@@ -27,15 +25,25 @@ def process_table(table):
 
 def dfs(node, count):
   print("{}ntag: {}{}".format(''.join(['-']*count), node.tag, ''.join(['-']*count)))
+  if node.text:
+    print('{} text: {}'.format(node.tag, node.text))
+  if node.tag == 'span':
+    print(node.attrib)
+
   for child in node.getchildren():
     if child.tag == 'table':
       print(process_table(child))
       #print(etree.tostring(child))
-    elif child.text:
-      print('{} text: {}'.format(child.tag, child.text))
+    elif child.tag == 'ul':
+      print("********************************")
+      print('\n'.join(child.itertext()))
+      dfs(child, count - 1)
+    elif child.tag == 'en-media':
+      print(child.attrib)
+      dfs(child, count - 1)
     else:
-      pass
-    dfs(child, count - 1)
+      dfs(child, count - 1)
+      
 
 if __name__ == '__main__':
   doc = etree.parse('/Users/zhanghao/workspace/git/FuckYinxiang/tmp.xml')

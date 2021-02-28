@@ -19,6 +19,9 @@ import evernote.edam.notestore.NoteStore as NoteStore
 from evernote.api.client import EvernoteClient
 
 import xml.etree.ElementTree as ET
+from lxml import etree
+from io import StringIO, BytesIO
+from convert import *
 
 class FuckYinxiang:
   def __init__(self, auth_token):
@@ -41,21 +44,11 @@ class FuckYinxiang:
   def process_note(self, note_guid):
     note_all_data = self.note_store.getNote(self.auth_token, note_guid, True, True, True, True)
     content = note_all_data.content
-    content = content.replace("&nbsp;", " ")
-    print(content)
-    exit()
-    doc = ET.fromstring(content)
-    print(doc.itertext())
-    print('\n'.join(doc.itertext()))
-    exit()
-    ennote = doc.findall('en-note')
-    print(type(ennote))
-    print(ennote)
-    for child in ennote:
-      print(child.text)
-    exit(0)
-    for item in doc.find('en-note'):
-      print(item)
+    content = content.replace("&nbsp", " ").encode()
+    #doc = ET.fromstring(content)
+    #print(type(content))
+    doc = etree.XML(content)
+    dfs(doc, 10)
 
   def get_note_guid_bytitle(self, note_title):
     for notebook in self.note_store.listNotebooks():
@@ -72,7 +65,7 @@ if __name__ == '__main__':
   import sys 
   auth_token = sys.argv[1] 
   yx = FuckYinxiang(auth_token)
-  note_guid = yx.get_note_guid_bytitle("caller type recall precision data runtime")
+  note_guid = yx.get_note_guid_bytitle("连读 稿")
   if note_guid:
     yx.process_note(note_guid)
   print("Done")
