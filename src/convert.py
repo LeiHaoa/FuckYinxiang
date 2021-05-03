@@ -8,10 +8,14 @@ def dfs_table(node, tableString):
       tableString += '|'
     if child.text:
       tableString += child.text
+    if child.tag == 'en-media':
+      print(child.attrib)
+      tableString += str(child.attrib)
     tableString = dfs_table(child, tableString)
   return tableString
+import io
 
-def process_table(table):
+def process_table_old(table):
   print('processing table')
   #TODO add print table header 
   table = table.find('tbody')
@@ -23,32 +27,83 @@ def process_table(table):
       table_content += one_line + '\n'
   return table_content
 
+def process_en_media(node):
+  return str(node.attrib)+'\n'
+
+def dfs_text(node, text):
+  if node.text:
+    text += node.text
+  for child in node.getchildren():
+    if child.text:
+      text += child.text
+    if child.tag == 'en-media':
+      print(child.attrib)
+      text += process_en_media(child)
+    text = dfs_text(child, text)
+  return text
+
+def process_table(table):
+  print("processing table new")
+  table_content = ''
+  #---- thead ----#
+  head = table.find('thead')
+  if head:
+    for tr in head.findall('tr'):
+      table_content += "|"
+      for td in tr.findall('td'):
+        table_content = dfs_text(td, table_content) + " |"
+      table_content += "\n"
+  #---- tbody ----#
+  body = table.find('tbody')
+  if body:
+    for tr in body.findall('tr'):
+      table_content += "|"
+      for td in tr.findall('td'):
+        #table_content = dfs_text(td, table_content) + " |"
+        table_content += dfs(td, 7) + " |"
+      table_content += "\n"
+  print(table_content)
+  return table_content
+
+def process_ulist(ulist):
+  return None
 def dfs(node, count):
+  result_text = ""
   print("{}ntag: {}{}".format(''.join(['-']*count), node.tag, ''.join(['-']*count)))
   if node.text:
     print('{} text: {}'.format(node.tag, node.text))
-  if node.tag == 'span':
+    result_text += node.text
+
+  if node.tag == 'br':
+    result_text += '\n'
+  elif node.tag == 'span':
     print(node.attrib)
+  elif node.tag == 'table':
+    result_text += process_table(node)
+    print(result_text)
+    return result_text
+  elif node.tag == 'ul':
+    print("**************TODOOOOOOOOOOOOOOOOO 215******************")
+    print(node.itertext())
+    result_text += '\n'.join(node.itertext())
+    return result_text
+  elif node.tag == 'en-media':
+    print("xxxxxxxxx", node.attrib)
+    result_text += process_en_media(node)
+    return result_text
 
   for child in node.getchildren():
-    if child.tag == 'table':
-      print(process_table(child))
-      #print(etree.tostring(child))
-    elif child.tag == 'ul':
-      print("********************************")
-      print('\n'.join(child.itertext()))
-      dfs(child, count - 1)
-    elif child.tag == 'en-media':
-      print(child.attrib)
-      dfs(child, count - 1)
-    else:
-      dfs(child, count - 1)
-      
+    result_text += dfs(child, count - 1)
+
+  return result_text
 
 if __name__ == '__main__':
-  doc = etree.parse('/Users/zhanghao/workspace/git/FuckYinxiang/tmp.xml')
+  doc = etree.parse('/Users/zhanghao/workspace/git/FuckYinxiang/test_content.xml')
   print(dir(doc))
-  dfs(doc.getroot(), 10)
+  result = dfs(doc.getroot(), 10)
+  print('----------------------------------------------------------------------------------')
+  
+  print(result)
   #print(etree.tostring(doc.getroot()))
   '''
   with open('./tmp.xml') as f:
