@@ -10,7 +10,9 @@
 
 import os
 os.environ['PYTHONPATH'] = '/Users/zhanghao/workspace/git/FuckYinxiang/lib'
-from PIL import Image
+import sys
+sys.path.append('/Users/zhanghao/workspace/git/FuckYinxiang/lib')
+#from PIL import Image
 import io
 
 import hashlib
@@ -24,6 +26,7 @@ import xml.etree.ElementTree as ET
 from lxml import etree
 from io import StringIO, BytesIO
 from convert import *
+import html2text
 
 class FuckYinxiang:
   def __init__(self, auth_token):
@@ -47,30 +50,45 @@ class FuckYinxiang:
 
   def process_note(self, note_guid):
     note_all_data = self.note_store.getNote(self.auth_token, note_guid, True, True, True, True)
-    #makdir to store media data
-    resource_dir = os.path.join(self.export_dir, note_all_data.title)
-    if not os.path.exists(resource_dir):
-      os.mkdir(resource_dir)
-    print(dir(note_all_data))
-    for x in note_all_data.resources:
-      file_content = x.data.body
-      media_hash = hashlib.md5(file_content).hexdigest()
-      file_type = x.mime
-      file_name = x.attributes.fileName
-      if file_type == "image/png":
-        image = Image.open(io.BytesIO(x.data.body))
-        image.save(os.path.join(resource_dir, "{}.png".format(media_hash)))
+    
+    if note_all_data.resources:
+      #makdir to store media data
+      resource_dir = os.path.join(self.export_dir, note_all_data.title)
+      if not os.path.exists(resource_dir):
+        os.mkdir(resource_dir)
+      print(dir(note_all_data))
+
+      for x in note_all_data.resources:
+        file_content = x.data.body
+        media_hash = hashlib.md5(file_content).hexdigest()
+        file_type = x.mime
+        file_name = x.attributes.fileName
+        if file_type == "image/png":
+          pass
+          image = Image.open(io.BytesIO(x.data.body))
+          image.save(os.path.join(resource_dir, "{}.png".format(media_hash)))
     
     content = note_all_data.content
-    content = content.replace("&nbsp", " ").encode()
+    print(type(content))
+    content = content.replace("&nbsp", " ")
+    content = content.replace('\n\n', '\n')
+    
+    h = html2text.HTML2Text()
+    rich_table = True #rich table (paper sumer)
+    if rich_table:
+      content = content.replace('\n|\n', '|')
+    md = h.handle(content)
+    print(md)
+    '''
     #doc = ET.fromstring(content)
     #print(type(content))
-    with open('./test_content.xml', 'w') as f:
+    with open('./test_content_onlytext.xml', 'w') as f:
       f.write(content.decode('utf-8'))
       print('write done')
     doc = etree.XML(content)
     print("-------------------------------------------------------")
     print(dfs(doc, 10))
+    '''
 
   def get_note_guid_bytitle(self, note_title):
     for notebook in self.note_store.listNotebooks():
@@ -96,7 +114,7 @@ if __name__ == '__main__':
   auth_token = sys.argv[1] 
   yx = FuckYinxiang(auth_token)
   #note_guid = yx.get_note_guid_bytitle("caller type recall precision data runtime")
-  note_guid = yx.get_note_guid_bytitle("Deep convolutional neural networks for accurate somatic mutation detection")
+  note_guid = yx.get_note_guid_bytitle("notebook ssh远程连接服务器")
   print("note guid: ", note_guid)
   if note_guid:
     yx.process_note(note_guid)

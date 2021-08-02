@@ -69,9 +69,9 @@ def process_ulist(ulist):
   return None
 def dfs(node, count):
   result_text = ""
-  print("{}ntag: {}{}".format(''.join(['-']*count), node.tag, ''.join(['-']*count)))
+  #print("{}ntag: {}{}".format(''.join(['-']*count), node.tag, ''.join(['-']*count)))
   if node.text:
-    print('{} text: {}'.format(node.tag, node.text))
+    #print('{} text: {}'.format(node.tag, node.text))
     result_text += node.text
 
   if node.tag == 'br':
@@ -98,6 +98,12 @@ def dfs(node, count):
   return result_text
 
 if __name__ == '__main__':
+  import html2text
+  h = html2text.HTML2Text()
+  with open('/Users/zhanghao/workspace/git/FuckYinxiang/tmp_rich.xml', 'r') as f:
+    h.image_to_alt = True
+    print(h.handle(f.read()).replace("\n\n", '\n').replace('\n|\n', '|'))
+  '''
   doc = etree.parse('/Users/zhanghao/workspace/git/FuckYinxiang/test_content.xml')
   print(dir(doc))
   result = dfs(doc.getroot(), 10)
@@ -105,6 +111,7 @@ if __name__ == '__main__':
   
   print(result)
   #print(etree.tostring(doc.getroot()))
+  '''
   '''
   with open('./tmp.xml') as f:
     xmlstr = f.read()
