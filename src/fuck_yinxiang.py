@@ -65,8 +65,8 @@ class FuckYinxiang:
         file_name = x.attributes.fileName
         if file_type == "image/png":
           pass
-          image = Image.open(io.BytesIO(x.data.body))
-          image.save(os.path.join(resource_dir, "{}.png".format(media_hash)))
+          #image = Image.open(io.BytesIO(x.data.body))
+          #image.save(os.path.join(resource_dir, "{}.png".format(media_hash)))
     
     content = note_all_data.content
     print(type(content))
@@ -114,7 +114,7 @@ if __name__ == '__main__':
   auth_token = sys.argv[1] 
   yx = FuckYinxiang(auth_token)
   #note_guid = yx.get_note_guid_bytitle("caller type recall precision data runtime")
-  note_guid = yx.get_note_guid_bytitle("notebook ssh远程连接服务器")
+  note_guid = yx.get_note_guid_bytitle("Deep convolutional neural networks for accurate somatic mutation detection")
   print("note guid: ", note_guid)
   if note_guid:
     yx.process_note(note_guid)

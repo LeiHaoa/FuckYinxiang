@@ -1,5 +1,7 @@
 from lxml import etree
 #import xml.etree.ElementTree as ET
+import sys
+sys.path.append('/Users/zhanghao/workspace/git/FuckYinxiang/lib')
 
 def dfs_table(node, tableString):
   #print('processing:    ', node.tag)
