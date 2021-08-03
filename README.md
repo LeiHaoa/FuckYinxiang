@@ -3,30 +3,27 @@ Evernote SDK for Python 3
 
 Evernote API version 1.25
 
+开发中，欢迎各位大佬贡献代码
+
 Overview
 --------
-**This is a test SDK!** The official Evernote SDK for Python doesn't support Python 3 yet; this repository is an experiment as we try to migrate.
+印象笔记的广告真的是及其恶心！！！！！！！！！
 
-This SDK contains wrapper code used to call the Evernote Cloud API from Python.
 
-The SDK also contains a sample script. The code demonstrates the basic use of the SDK for single-user scripts. Real web applications must use OAuth to authenticate to the Evernote service.
+所以我想把印象笔记的导出为markdown格式。 主要用到的印象笔记的SDK和[html2text](https://github.com/Alir3z4/html2text)
 
-Prerequisites
--------------
-In order to use the code in this SDK, you need to obtain an API key from http://dev.evernote.com/documentation/cloud. You'll also find full API documentation on that page.
-
-In order to run the sample code, you need a user account on the sandbox service where you will do your development. Sign up for an account at https://sandbox.evernote.com/Registration.action 
-
-In order to run the client client sample code, you need a developer token. Get one at https://sandbox.evernote.com/api/DeveloperToken.action
+目前正在完善中。。。。还不知道会不会对你的原始笔记做什么不可挽回到的后果（不过貌似不会）慎重使用
 
 Getting Started
 ---------------
-The code in `sample/client/EDAMTest.py` demonstrates the basics of using the Evernote API, using developer tokens to simplify the authentication process while you're learning.
 
-1. Open `sample/client/EDAMTest.py`
-2. Scroll down and fill in your Evernote developer token.
-3. On the command line, run the following command to execute the script:
+1. 获取token
+  https://dev.yinxiang.com/doc/articles/dev_tokens.php
+  点击“产品”对应的连接
+  再点击相应的就可以了
 
-    ```bash
-    $ export PYTHONPATH=../../lib; python EDAMTest.py
-    ```
+2. 运行
+
+```bash
+python3 src/fuck_yinxiang ${YOUR_TOKEN}
+```
